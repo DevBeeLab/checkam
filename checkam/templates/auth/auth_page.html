@@ -1,0 +1,107 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}" />
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+/>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+/>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap"
+  rel="stylesheet"
+/>
+
+{% if messages %}
+<div class="messages">
+  {% for message in messages %}
+  <div class="message {{ message.tags }}">{{ message }}</div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<div class="container" id="container">
+  <!-- SIGN UP FORM -->
+  <div class="form-container sign-up-container">
+    <form method="POST">
+      {% csrf_token %}
+      <input type="hidden" name="form_type" value="signup" />
+      <h1>Create Account</h1>
+      <div class="social-container">
+        <a href="#" class="social"><i class="fab fa-facebook"></i></a>
+        <a href="#" class="social"><i class="fab fa-google"></i></a>
+        <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+      </div>
+      <span>or use your email for registration</span>
+      <input
+        type="text"
+        id="first_name"
+        name="first_name"
+        placeholder="First Name"
+        required
+      />
+      <input
+        type="text"
+        id="last_name"
+        name="last_name"
+        placeholder="Last Name"
+        required
+      />
+      <input type="email" name="email" placeholder="Email" required />
+      <input
+        type="password"
+        name="password"
+        placeholder="Password"
+        required
+        minlength="8"
+      />
+      <button type="submit" name="signup">Sign Up</button>
+    </form>
+  </div>
+
+  <!-- SIGN IN FORM -->
+  <div class="form-container sign-in-container">
+    <form method="POST">
+      {% csrf_token %}
+      <input type="hidden" name="form_type" value="signin" />
+      <h1>Sign in</h1>
+      <div class="social-container">
+        <a href="#" class="social"><i class="fab fa-facebook"></i></a>
+        <a href="#" class="social"><i class="fab fa-google"></i></a>
+        <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+      </div>
+      <span>or use your account</span>
+      <input type="email" name="email" placeholder="Email" />
+      <input type="password" name="password" placeholder="Password" />
+      <a href="#">Forgot your password?</a>
+      <button type="submit" name="signin">Sign In</button>
+    </form>
+  </div>
+  <!-- OVERLAY CONTAINER-->
+  <div class="overlay-container">
+    <div class="overlay">
+      <div class="overlay-panel overlay-left">
+        <h1>Welcome Back!</h1>
+        <p>To keep connected with us please login with your personal info</p>
+        <button class="ghost" id="signIn">Sign In</button>
+      </div>
+      <div class="overlay-panel overlay-right">
+        <h1>Hello, Friend!</h1>
+        <p>Enter your personal details and start coding with DevBee</p>
+        <button class="ghost" id="signUp">Sign Up</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>
+    Created <i class=""></i> by
+    <a target="_blank" href="https://dev-bee.vercel.app">DevBee</a>
+  </p>
+</footer>
+<script src="{% static 'js/auth.js' %}"></script>
+<script src="https://unpkg.com/lucide@latest"></script>

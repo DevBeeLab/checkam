@@ -1,0 +1,183 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Checkam{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/partials.css' %}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet" />
+    {% block extra_css %}{% endblock %}
+  </head>
+  <body>
+    {% include 'partials/sidebar.html' %}
+
+    <div class="main-content">
+      {% include 'partials/navbar.html' %}
+
+      {% if messages %}
+      <div class="flash-messages">
+        {% for message in messages %}
+        <div class="flash flash--{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <main>{% block content %}{% endblock %}</main>
+    </div>
+
+    {% include 'partials/footer.html' %}
+
+    <!-- Add Transaction Modal -->
+    <div id="addTransactionModal" class="modal modal--hidden" role="dialog" aria-hidden="true" data-close-on-overlay="true">
+      <div class="modal__content" role="document">
+        <header class="modal__header">
+          <h3>Add Transaction</h3>
+          <button type="button" class="modal__close" aria-label="Close" data-modal-close="addTransaction">✕</button>
+        </header>
+        <div class="modal__body">
+          <form method="POST" action="{% url 'add_transaction' %}" id="addTransactionForm">
+            {% csrf_token %}
+            <label>Description<input type="text" name="description" required /></label>
+            <label>Type
+              <select name="transaction_type" required>
+                <option value="income">Income</option>
+                <option value="expense">Expense</option>
+              </select>
+            </label>
+            <label>Category
+              <select name="category" required>
+                <option value="food">Food</option>
+                <option value="transport">Transport</option>
+                <option value="rent">Rent</option>
+                <option value="data">Data</option>
+                <option value="salary">Salary</option>
+                <option value="entertainment">Entertainment</option>
+                <option value="utilities">Utilities</option>
+                <option value="other">Other</option>
+              </select>
+            </label>
+            <label>Amount<input type="number" name="amount" step="0.01" min="0.01" required /></label>
+            <div class="modal__actions">
+              <button type="button" class="btn" data-modal-close="addTransaction">Cancel</button>
+              <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Transaction Modal -->
+    <div id="editTransactionModal" class="modal modal--hidden" role="dialog" aria-hidden="true" data-close-on-overlay="true">
+      <div class="modal__content" role="document">
+        <header class="modal__header">
+          <h3>Edit Transaction</h3>
+          <button type="button" class="modal__close" aria-label="Close" data-modal-close="editTransaction">✕</button>
+        </header>
+        <div class="modal__body">
+          <form method="POST" id="editTransactionForm">
+            {% csrf_token %}
+            <label>Description<input type="text" name="description" id="edit_txn_description" required /></label>
+            <label>Type
+              <select name="transaction_type" id="edit_txn_type" required>
+                <option value="income">Income</option>
+                <option value="expense">Expense</option>
+              </select>
+            </label>
+            <label>Category
+              <select name="category" id="edit_txn_category" required>
+                <option value="food">Food</option>
+                <option value="transport">Transport</option>
+                <option value="rent">Rent</option>
+                <option value="data">Data</option>
+                <option value="salary">Salary</option>
+                <option value="entertainment">Entertainment</option>
+                <option value="utilities">Utilities</option>
+                <option value="other">Other</option>
+              </select>
+            </label>
+            <label>Amount<input type="number" name="amount" id="edit_txn_amount" step="0.01" min="0.01" required /></label>
+            <div class="modal__actions">
+              <button type="button" class="btn" data-modal-close="editTransaction">Cancel</button>
+              <button type="submit" class="btn btn-primary">Update</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Budget Modal -->
+    <div id="addBudgetModal" class="modal modal--hidden" role="dialog" aria-hidden="true" data-close-on-overlay="true">
+      <div class="modal__content" role="document">
+        <header class="modal__header">
+          <h3>Add Budget</h3>
+          <button type="button" class="modal__close" aria-label="Close" data-modal-close="addBudget">✕</button>
+        </header>
+        <div class="modal__body">
+          <form method="POST" action="{% url 'add_budget' %}" id="addBudgetForm">
+            {% csrf_token %}
+            <label>Category
+              <select name="category" id="add_budget_category" required>
+                <option value="" disabled selected>Select a category</option>
+                <option value="food">Food</option>
+                <option value="transport">Transport</option>
+                <option value="rent">Rent</option>
+                <option value="data">Data</option>
+                <option value="salary">Salary</option>
+                <option value="entertainment">Entertainment</option>
+                <option value="utilities">Utilities</option>
+                <option value="other">Other</option>
+              </select>
+            </label>
+            <label>Monthly Limit (₦)<input type="number" name="limit" step="0.01" min="0.01" required /></label>
+            <div class="modal__actions">
+              <button type="button" class="btn" data-modal-close="addBudget">Cancel</button>
+              <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Budget Modal -->
+    <div id="editBudgetModal" class="modal modal--hidden" role="dialog" aria-hidden="true" data-close-on-overlay="true">
+      <div class="modal__content" role="document">
+        <header class="modal__header">
+          <h3>Edit Budget</h3>
+          <button type="button" class="modal__close" aria-label="Close" data-modal-close="editBudget">✕</button>
+        </header>
+        <div class="modal__body">
+          <form method="POST" id="editBudgetForm">
+            {% csrf_token %}
+            <label>Category
+              <select name="category" id="edit_category" required>
+                <option value="food">Food</option>
+                <option value="transport">Transport</option>
+                <option value="rent">Rent</option>
+                <option value="data">Data</option>
+                <option value="salary">Salary</option>
+                <option value="entertainment">Entertainment</option>
+                <option value="utilities">Utilities</option>
+                <option value="other">Other</option>
+              </select>
+            </label>
+            <label>Monthly Limit (₦)<input type="number" name="limit" id="edit_limit" step="0.01" min="0.01" required /></label>
+            <div class="modal__actions">
+              <button type="button" class="btn" data-modal-close="editBudget">Cancel</button>
+              <button type="submit" class="btn btn-primary">Update Budget</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script src="{% static 'js/modals.js' %}"></script>
+    <script src="{% static 'js/app.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+  </body>
+</html>

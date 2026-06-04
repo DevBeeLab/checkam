@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Reports - Checkam{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/reports.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="reports-page">
+  <header class="page-header">
+    <h2 class="page-title">Reports</h2>
+    <div class="report-actions">
+      <button class="btn btn-primary" id="exportCsvBtn">
+        <i class="fas fa-download"></i> Export CSV
+      </button>
+    </div>
+  </header>
+
+  <section class="charts-section">
+    <div class="chart-card">
+      <h3 class="chart-card__title">Monthly Income vs Expenses</h3>
+      <canvas id="monthlySpendingChart"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3 class="chart-card__title">Spending by Category</h3>
+      <canvas id="categoryBreakdownChart"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3 class="chart-card__title">Budget Performance</h3>
+      <canvas id="budgetPerformanceChart"></canvas>
+    </div>
+  </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'js/reports.js' %}"></script>
+{% endblock %}

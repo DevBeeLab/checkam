@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+{% block title %}Dashboard - Checkam{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+
+  <!-- Summary Cards -->
+  <section class="summary-cards">
+    <div class="card summary-card">
+      <h2 class="card__title">Total Balance</h2>
+      <p class="card__value {% if balance >= 0 %}text-income{% else %}text-expense{% endif %}">
+        ₦{{ balance|intcomma }}
+      </p>
+    </div>
+    <div class="card summary-card">
+      <h2 class="card__title">Total Income</h2>
+      <p class="card__value text-income" id="income-value" data-value="{{ income }}">
+        ₦{{ income|intcomma }}
+      </p>
+    </div>
+    <div class="card summary-card">
+      <h2 class="card__title">Total Expenses</h2>
+      <p class="card__value text-expense" id="expense-value" data-value="{{ expense }}">
+        ₦{{ expense|intcomma }}
+      </p>
+    </div>
+    <div class="card summary-card">
+      <h2 class="card__title">Savings Rate</h2>
+      <p class="card__value">{{ savings_rate }}%</p>
+    </div>
+  </section>
+
+  <!-- Charts -->
+  <section class="charts-section">
+    <div class="chart-card">
+      <h3 class="chart-card__title">Income vs Expense</h3>
+      <canvas id="incomeExpenseChart"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3 class="chart-card__title">Spending by Category</h3>
+      <canvas id="expenseCategoryChart"></canvas>
+    </div>
+  </section>
+
+  <!-- Recent Transactions -->
+  <section class="transactions-section">
+    <div class="section-header">
+      <h3 class="section-title">Recent Transactions</h3>
+      <a href="{% url 'transactions' %}" class="btn btn-secondary btn-sm">View All</a>
+    </div>
+    <table class="transactions-table">
+      <thead>
+        <tr>
+          <th>Description</th>
+          <th>Type</th>
+          <th>Category</th>
+          <th>Amount</th>
+          <th>Date</th>
+          <th class="text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for t in transactions %}
+        <tr>
+          <td>{{ t.description }}</td>
+          <td><span class="badge badge--{{ t.transaction_type }}">{{ t.transaction_type|capfirst }}</span></td>
+          <td>{{ t.category|capfirst }}</td>
+          <td class="{% if t.transaction_type == 'income' %}text-income{% else %}text-expense{% endif %}">
+            {% if t.transaction_type == 'income' %}+{% else %}−{% endif %}₦{{ t.amount|intcomma }}
+          </td>
+          <td>{{ t.date|date:"M d, Y" }}</td>
+          <td class="text-center">
+            <a href="{% url 'delete-transaction' t.id %}">
+              <button class="btn btn-sm btn-danger">Delete</button>
+            </a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" class="text-center">No transactions yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <button type="button" class="btn btn-primary" onclick="window.openModal('addTransaction')" style="margin-top:1rem">
+      + Add Transaction
+    </button>
+  </section>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'js/dashboard.js' %}"></script>
+{% endblock %}

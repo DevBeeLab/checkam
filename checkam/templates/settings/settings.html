@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Settings - Checkam{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/settings.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="settings-page">
+  <header class="page-header">
+    <h2 class="page-title">Account Settings</h2>
+  </header>
+
+  <!-- Update Profile -->
+  <section class="settings-section">
+    <h3 class="section-title">Profile</h3>
+    <form method="POST" action="{% url 'settings' %}" class="settings-form">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="update_profile" />
+      <div class="form-group">
+        <label for="first_name">First Name</label>
+        <input type="text" id="first_name" name="first_name" value="{{ request.user.first_name }}" />
+      </div>
+      <div class="form-group">
+        <label for="last_name">Last Name</label>
+        <input type="text" id="last_name" name="last_name" value="{{ request.user.last_name }}" />
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" value="{{ request.user.email }}" disabled />
+      </div>
+      <button type="submit" class="btn btn-primary">Save Profile</button>
+    </form>
+  </section>
+
+  <!-- Change Password -->
+  <section class="settings-section">
+    <h3 class="section-title">Change Password</h3>
+    <form method="POST" action="{% url 'settings' %}" class="settings-form">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="change_password" />
+      <div class="form-group">
+        <label for="current_password">Current Password</label>
+        <input type="password" id="current_password" name="current_password" required />
+      </div>
+      <div class="form-group">
+        <label for="new_password">New Password</label>
+        <input type="password" id="new_password" name="new_password" required minlength="8" />
+      </div>
+      <div class="form-group">
+        <label for="confirm_password">Confirm New Password</label>
+        <input type="password" id="confirm_password" name="confirm_password" required />
+      </div>
+      <button type="submit" class="btn btn-primary">Change Password</button>
+    </form>
+  </section>
+
+  <!-- Preferences (localStorage-based) -->
+  <section class="settings-section">
+    <h3 class="section-title">Preferences</h3>
+    <form id="preferencesForm" class="settings-form">
+      <div class="form-group">
+        <label for="themeSelect">Theme</label>
+        <select id="themeSelect" name="theme">
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary">Save Preferences</button>
+    </form>
+  </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/settings.js' %}"></script>
+{% endblock %}

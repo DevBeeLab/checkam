@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% load static %}
+{% block title %}Budgets - Checkam{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/budgets.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="budgets-page">
+  <header class="page-header">
+    <h2 class="page-title">Budgets</h2>
+    {% if available_categories %}
+    <button type="button" class="btn btn-primary" id="addBudgetBtn">Add Budget</button>
+    {% else %}
+    <p class="text-muted" style="font-size:0.85rem">All categories have budgets.</p>
+    {% endif %}
+  </header>
+
+  <section class="budget-cards">
+    {% for budget in budgets %}
+    <div class="budget-card {% if budget.over_budget %}budget-card--over{% endif %}">
+
+      <div class="budget-card__header">
+        <h3 class="budget-title">{{ budget.category_label }}</h3>
+        <span class="badge {% if budget.over_budget %}badge--expense{% elif budget.percent > 75 %}badge--warning{% else %}badge--income{% endif %}">
+          {% if budget.over_budget %}Over budget{% elif budget.percent > 75 %}Almost full{% else %}On track{% endif %}
+        </span>
+      </div>
+
+      <div class="budget-amounts">
+        <div class="budget-amount-item">
+          <span class="amount-label">Limit</span>
+          <span class="amount-value">₦{{ budget.limit|intcomma }}</span>
+        </div>
+        <div class="budget-amount-item">
+          <span class="amount-label">Spent</span>
+          <span class="amount-value text-expense">₦{{ budget.spent|intcomma }}</span>
+        </div>
+        <div class="budget-amount-item">
+          <span class="amount-label">{% if budget.over_budget %}Overspent{% else %}Remaining{% endif %}</span>
+          <span class="amount-value {% if budget.over_budget %}text-expense{% else %}text-income{% endif %}">
+            {% if budget.over_budget %}−₦{{ budget.overspent|intcomma }}{% else %}₦{{ budget.remaining|intcomma }}{% endif %}
+          </span>
+        </div>
+      </div>
+
+      <div class="progress-bar">
+        <div class="progress"
+          style="width: {{ budget.percent }}%;
+                 background-color: {% if budget.over_budget %}var(--color-expense){% elif budget.percent > 75 %}#F39C12{% else %}var(--color-income){% endif %};">
+        </div>
+      </div>
+      <p class="budget-percent">{{ budget.percent }}% of budget used</p>
+
+      <div class="budget-actions">
+        <button type="button" class="btn btn-secondary edit-btn"
+          data-id="{{ budget.id }}"
+          data-category="{{ budget.category }}"
+          data-limit="{{ budget.limit }}">
+          Edit
+        </button>
+        <a href="{% url 'delete_budget' budget.id %}" class="btn btn-danger">Delete</a>
+      </div>
+
+    </div>
+    {% empty %}
+    <div class="empty-state">
+      <p>No budgets yet. Click "Add Budget" to set spending limits by category.</p>
+    </div>
+    {% endfor %}
+  </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/budgets.js' %}"></script>
+{% endblock %}

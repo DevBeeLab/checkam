@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% load static %}
+{% block title %}Transactions - Checkam{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/transactions.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="transactions-page">
+  <header class="page-header">
+    <h2 class="page-title">Transactions</h2>
+    <button type="button" class="btn btn-primary" id="addTransactionBtn">Add Transaction</button>
+  </header>
+
+  <section class="filters-section">
+    <input type="search" id="searchInput" placeholder="Search description..." class="filter-input" />
+    <select id="categoryFilter" class="filter-select">
+      <option value="">All Categories</option>
+    </select>
+    <select id="typeFilter" class="filter-select">
+      <option value="">All Types</option>
+      <option value="income">Income</option>
+      <option value="expense">Expense</option>
+    </select>
+    <select id="sortFilter" class="filter-select">
+      <option value="date_desc">Date ↓</option>
+      <option value="date_asc">Date ↑</option>
+      <option value="amount_desc">Amount ↓</option>
+      <option value="amount_asc">Amount ↑</option>
+    </select>
+  </section>
+
+  <table class="transactions-table">
+    <thead>
+      <tr>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Category</th>
+        <th>Amount</th>
+        <th>Date</th>
+        <th class="text-center">Actions</th>
+      </tr>
+    </thead>
+    <tbody id="transactions-body">
+      {% for t in transactions %}
+      <tr data-id="{{ t.id }}"
+          data-description="{{ t.description }}"
+          data-amount="{{ t.amount }}"
+          data-date="{{ t.date|date:'Y-m-d' }}"
+          data-category="{{ t.category }}"
+          data-type="{{ t.transaction_type }}"
+          data-transaction_type="{{ t.transaction_type }}">
+        <td>{{ t.description }}</td>
+        <td>
+          <span class="badge badge--{{ t.transaction_type }}">{{ t.transaction_type|capfirst }}</span>
+        </td>
+        <td>{{ t.category|capfirst }}</td>
+        <td class="{% if t.transaction_type == 'income' %}text-income{% else %}text-expense{% endif %}">
+          {% if t.transaction_type == 'income' %}+{% else %}−{% endif %}₦{{ t.amount|intcomma }}
+        </td>
+        <td>{{ t.date|date:"M d, Y" }}</td>
+        <td class="text-center">
+          <button class="btn btn-sm btn-secondary edit-transaction"
+            data-id="{{ t.id }}"
+            data-description="{{ t.description }}"
+            data-amount="{{ t.amount }}"
+            data-date="{{ t.date|date:'Y-m-d' }}"
+            data-category="{{ t.category }}"
+            data-transaction_type="{{ t.transaction_type }}">
+            Edit
+          </button>
+          <a href="{% url 'delete-transaction' t.id %}">
+            <button class="btn btn-sm btn-danger">Delete</button>
+          </a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="6" class="text-center">No transactions found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <nav class="pagination" id="paginationContainer"></nav>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/transactions.js' %}"></script>
+{% endblock %}
