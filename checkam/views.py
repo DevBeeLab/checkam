@@ -10,7 +10,7 @@ from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 from django.db.models.functions import TruncMonth
-from .models import Transactions, Budget
+from .models import Transactions, Budget, Signup
 
 
 # ──────────────────────────── AUTH ────────────────────────────
@@ -23,13 +23,17 @@ def auth_page(request):
         form_type = request.POST.get('form_type')
 
         if form_type == 'signup':
+            username = request.POST.get('username', '').strip().lower()
             first_name = request.POST.get('first_name', '').strip().capitalize()
             last_name  = request.POST.get('last_name',  '').strip().capitalize()
             email      = request.POST.get('email', '').strip().lower()
             password   = request.POST.get('password', '')
 
-            if not all([first_name, last_name, email, password]):
+            if not all([username, first_name, last_name, email, password]):
                 messages.error(request, 'Please fill all the fields')
+                return render(request, 'auth/auth_page.html')
+            if User.objects.filter(username=username).exists():
+                messages.error(request, 'Username already exists')
                 return render(request, 'auth/auth_page.html')
             if User.objects.filter(email=email).exists():
                 messages.error(request, 'Email already exists')
@@ -50,8 +54,15 @@ def auth_page(request):
                 messages.error(request, 'Password must contain a special character (@$!%*?&).')
                 return render(request, 'auth/auth_page.html')
 
-            user = User.objects.create_user(username=email, first_name=first_name, last_name=last_name, email=email)
-            user.set_password(password)
+            signup = Signup.objects.create(
+                username=username,
+                first_name=first_name,
+                last_name=last_name,
+                email=email,
+                password=password
+            )
+            user = User.objects.create_user(username=signup.username, first_name=signup.first_name, last_name=signup.last_name, email=signup.email)
+            user.set_password(signup.password)
             user.save()
             login(request, user)
             messages.success(request, 'Account created successfully!')
