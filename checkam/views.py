@@ -18,7 +18,6 @@ from .models import Transactions, Budget
 def landing(request):
     return render(request, 'landing_page.html')
 
-
 def auth_page(request):
     if request.user.is_authenticated:
         return redirect('dashboard')
@@ -54,7 +53,7 @@ def auth_page(request):
             if not re.search(r'\d', password):
                 messages.error(request, 'Password must contain a number.')
                 return render(request, 'auth/auth_page.html')
-            if not re.search(r'[@$!%*?&_%^-#]', password):
+            if not re.search(r'[@$!%*?&_%]', password):
                 messages.error(request, 'Password must contain a special character (@$!%*?&_%^-#).')
                 return render(request, 'auth/auth_page.html')
 
