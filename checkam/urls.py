@@ -1,8 +1,13 @@
 from django.urls import path
 from checkam.views import *
 
+# Custom error handlers — Django picks these up automatically
+handler404 = 'checkam.views.handler404'
+handler500 = 'checkam.views.handler500'
+
 urlpatterns = [
-    path('', auth_page, name='auth_page'),
+    path('', landing, name='landing'),
+    path('auth/', auth_page, name='auth_page'),
     path('forgot-password/', ForgotPasswordView.as_view(), name='forgot-password'),
     path('dashboard/', dashboard, name='dashboard'),
     path('transactions/', transactions, name='transactions'),

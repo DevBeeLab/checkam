@@ -15,6 +15,11 @@ from .models import Transactions, Budget
 
 # ──────────────────────────── AUTH ────────────────────────────
 
+def landing(request):
+    if request.user.is_authenticated:
+        return redirect('dashboard')
+    return render(request, 'landing_page.html')
+
 def auth_page(request):
     if request.user.is_authenticated:
         return redirect('dashboard')
@@ -392,3 +397,12 @@ class ForgotPasswordView(View):
         return render(request, 'auth/forgot_password.html')
     def post(self, request):
         pass
+
+
+# ──────────────────────────── ERROR HANDLERS ────────────────────────────
+ 
+def handler404(request, exception=None):
+    return render(request, '404.html', status=404)
+ 
+def handler500(request):
+    return render(request, '500.html', status=500)

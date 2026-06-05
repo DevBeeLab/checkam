@@ -1,30 +1,16 @@
 <header class="navbar" aria-label="Main Header">
   <div class="navbar__left">
-    <button
-      class="navbar__toggle"
-      aria-label="Toggle Sidebar"
-      id="sidebarToggle"
-      hidden
-    >
+    <button class="navbar__toggle" aria-label="Toggle Sidebar" id="sidebarToggle">
       <i class="fas fa-bars"></i>
     </button>
-    <p class="greeting" style="font-size: 1.5rem">
-      Hello,
-      <span class="user_name" style="font-weight: bolder"
-        >{{ request.user.get_full_name }}</span
-      >
-    </p>
+    <div class="navbar__greeting">
+      <span class="greeting-label">Good {% now "G" as hour %}{% if hour < 12 %}Morning{% elif hour < 17 %}Afternoon{% else %}Evening{% endif %},</span>
+      <span class="greeting-name">{{ request.user.first_name }}</span>
+    </div>
   </div>
   <div class="navbar__right">
-    <div
-      class="notifications"
-      tabindex="0"
-      aria-haspopup="true"
-      aria-controls=""
-    >
-      <a href="#">
-        <i class="fas fa-bell fa-1.5x"></i>
-      </a>
-    </div>
+    <a href="{% url 'settings' %}" class="navbar__avatar" title="Settings">
+      {{ request.user.first_name|first|upper }}
+    </a>
   </div>
 </header>

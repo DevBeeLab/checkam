@@ -12,34 +12,51 @@
 
   <!-- Summary Cards -->
   <section class="summary-cards">
-    <div class="card summary-card">
-      <h2 class="card__title">Total Balance</h2>
-      <p class="card__value {% if balance >= 0 %}text-income{% else %}text-expense{% endif %}">
-        ₦{{ balance|intcomma }}
-      </p>
+
+    <div class="summary-card summary-card--balance">
+      <div class="summary-card__top">
+        <span class="summary-card__label">Total Balance</span>
+        <span class="summary-card__icon summary-card__icon--balance"><i class="fas fa-naira-sign"></i></span>
+      </div>
+      <p class="summary-card__value">₦{{ balance|intcomma }}</p>
+      <p class="summary-card__sub">{{ savings_rate }}% savings rate</p>
     </div>
-    <div class="card summary-card">
-      <h2 class="card__title">Total Income</h2>
-      <p class="card__value text-income" id="income-value" data-value="{{ income }}">
-        ₦{{ income|intcomma }}
-      </p>
+
+    <div class="summary-card summary-card--income">
+      <div class="summary-card__top">
+        <span class="summary-card__label">Total Income</span>
+        <span class="summary-card__icon summary-card__icon--income"><i class="fas fa-arrow-down"></i></span>
+      </div>
+      <p class="summary-card__value" id="income-value" data-value="{{ income }}">+₦{{ income|intcomma }}</p>
+      <p class="summary-card__sub">All time earnings</p>
     </div>
-    <div class="card summary-card">
-      <h2 class="card__title">Total Expenses</h2>
-      <p class="card__value text-expense" id="expense-value" data-value="{{ expense }}">
-        ₦{{ expense|intcomma }}
-      </p>
+
+    <div class="summary-card summary-card--expense">
+      <div class="summary-card__top">
+        <span class="summary-card__label">Total Expenses</span>
+        <span class="summary-card__icon summary-card__icon--expense"><i class="fas fa-arrow-up"></i></span>
+      </div>
+      <p class="summary-card__value" id="expense-value" data-value="{{ expense }}">−₦{{ expense|intcomma }}</p>
+      <p class="summary-card__sub">All time spending</p>
     </div>
-    <div class="card summary-card">
-      <h2 class="card__title">Savings Rate</h2>
-      <p class="card__value">{{ savings_rate }}%</p>
+
+    <div class="summary-card summary-card--savings">
+      <div class="summary-card__top">
+        <span class="summary-card__label">Savings Rate</span>
+        <span class="summary-card__icon summary-card__icon--savings"><i class="fas fa-piggy-bank"></i></span>
+      </div>
+      <p class="summary-card__value">{{ savings_rate }}%</p>
+      <div class="savings-bar-track">
+        <div class="savings-bar-fill" style="width: {{ savings_rate }}%;"></div>
+      </div>
     </div>
+
   </section>
 
   <!-- Charts -->
   <section class="charts-section">
     <div class="chart-card">
-      <h3 class="chart-card__title">Income vs Expense</h3>
+      <h3 class="chart-card__title">Income vs Expenses</h3>
       <canvas id="incomeExpenseChart"></canvas>
     </div>
     <div class="chart-card">
@@ -49,46 +66,45 @@
   </section>
 
   <!-- Recent Transactions -->
-  <section class="transactions-section">
+  <section class="recent-section">
     <div class="section-header">
       <h3 class="section-title">Recent Transactions</h3>
-      <a href="{% url 'transactions' %}" class="btn btn-secondary btn-sm">View All</a>
+      <div style="display:flex; gap: 0.5rem;">
+        <button type="button" class="btn btn-primary btn-sm" onclick="window.openModal('addTransaction')">
+          <i class="fas fa-plus"></i> Add
+        </button>
+        <a href="{% url 'transactions' %}" class="btn btn-secondary btn-sm">View All</a>
+      </div>
     </div>
-    <table class="transactions-table">
-      <thead>
-        <tr>
-          <th>Description</th>
-          <th>Type</th>
-          <th>Category</th>
-          <th>Amount</th>
-          <th>Date</th>
-          <th class="text-center">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for t in transactions %}
-        <tr>
-          <td>{{ t.description }}</td>
-          <td><span class="badge badge--{{ t.transaction_type }}">{{ t.transaction_type|capfirst }}</span></td>
-          <td>{{ t.category|capfirst }}</td>
-          <td class="{% if t.transaction_type == 'income' %}text-income{% else %}text-expense{% endif %}">
-            {% if t.transaction_type == 'income' %}+{% else %}−{% endif %}₦{{ t.amount|intcomma }}
-          </td>
-          <td>{{ t.date|date:"M d, Y" }}</td>
-          <td class="text-center">
-            <a href="{% url 'delete-transaction' t.id %}">
-              <button class="btn btn-sm btn-danger">Delete</button>
-            </a>
-          </td>
-        </tr>
-        {% empty %}
-        <tr><td colspan="6" class="text-center">No transactions yet.</td></tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    <button type="button" class="btn btn-primary" onclick="window.openModal('addTransaction')" style="margin-top:1rem">
-      + Add Transaction
-    </button>
+
+    <div class="txn-list">
+      {% for t in transactions %}
+      <div class="txn-item">
+        <div class="txn-item__icon txn-icon--{{ t.category }}">
+          {% if t.category == 'food' %}<i class="fas fa-utensils"></i>
+          {% elif t.category == 'transport' %}<i class="fas fa-gas-pump"></i>
+          {% elif t.category == 'rent' %}<i class="fas fa-home"></i>
+          {% elif t.category == 'salary' %}<i class="fas fa-briefcase"></i>
+          {% elif t.category == 'data' %}<i class="fas fa-wifi"></i>
+          {% elif t.category == 'entertainment' %}<i class="fas fa-film"></i>
+          {% elif t.category == 'utilities' %}<i class="fas fa-bolt"></i>
+          {% else %}<i class="fas fa-receipt"></i>{% endif %}
+        </div>
+        <div class="txn-item__info">
+          <span class="txn-item__name">{{ t.description }}</span>
+          <span class="txn-item__meta">{{ t.category|capfirst }} · {{ t.date|date:"M d, Y" }}</span>
+        </div>
+        <span class="txn-item__amount txn-item__amount--{{ t.transaction_type }}">
+          {% if t.transaction_type == 'income' %}+{% else %}−{% endif %}₦{{ t.amount|intcomma }}
+        </span>
+      </div>
+      {% empty %}
+      <div class="empty-state">
+        <i class="fas fa-receipt" style="font-size:2rem; color: var(--color-muted); margin-bottom:0.5rem;"></i>
+        <p>No transactions yet. Add your first one!</p>
+      </div>
+      {% endfor %}
+    </div>
   </section>
 
 </div>

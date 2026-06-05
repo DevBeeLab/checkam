@@ -1,12 +1,16 @@
 {% if request.user.is_authenticated %}
 <nav class="sidebar" aria-label="Main Navigation">
+
   <div class="sidebar__brand">
-    <a href="{% url 'dashboard' %}" class="brand-logo">Checkam</a>
+    <a href="{% url 'dashboard' %}" class="brand-logo">check<span>am</span></a>
   </div>
 
   <div class="sidebar__user-info">
     <div class="user-avatar-placeholder">{{ request.user.first_name|first|upper }}</div>
-    <span class="user-display-name">{{ request.user.get_full_name }}</span>
+    <div class="user-info-text">
+      <span class="user-display-name">{{ request.user.get_full_name }}</span>
+      <span class="user-display-email">{{ request.user.email }}</span>
+    </div>
   </div>
 
   <ul class="sidebar__nav">
@@ -40,12 +44,14 @@
         <span class="nav-text">Settings</span>
       </a>
     </li>
-    <li class="nav-item">
-      <a href="{% url 'logout' %}" class="nav-link">
-        <span class="nav-icon"><i class="fas fa-sign-out-alt"></i></span>
-        <span class="nav-text">Logout</span>
-      </a>
-    </li>
   </ul>
+
+  <div class="sidebar__footer">
+    <a href="{% url 'logout' %}" class="logout-link">
+      <i class="fas fa-sign-out-alt"></i>
+      <span>Logout</span>
+    </a>
+  </div>
+
 </nav>
 {% endif %}

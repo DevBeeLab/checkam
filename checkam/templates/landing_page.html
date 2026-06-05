@@ -1,0 +1,183 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkam — Check Your Money</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Sora:wght@300;400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{% static 'css/landing_page.css' %}" />
+</head>
+<body>
+
+  <nav id="navbar">
+    <a href="#" class="nav-brand">check<span>am</span></a>
+    <div class="nav-actions">
+      <a href="{% url 'auth_page' %}" class="btn-ghost">Sign In</a>
+      <a href="{% url 'auth_page' %}" class="btn-nav-cta">Get Started Free</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-left">
+      <div class="hero-eyebrow">
+        <i class="fas fa-naira-sign"></i> Built for Nigeria
+      </div>
+      <h1 class="hero-title">
+        Know where your<br />money <span class="accent">dey go</span>
+      </h1>
+      <p class="hero-sub">
+        Track income and expenses, set budgets by category, 
+        and see your full financial picture; in one clean 
+        dashboard designed for Nigerians.
+      </p>
+      <div class="hero-cta-group">
+        <a href="{% url 'auth_page' %}" class="btn-primary-lg">
+          <i class="fas fa-rocket"></i> Start Tracking Free
+        </a>
+        <a href="#features" class="btn-outline-lg">
+          See Features <i class="fas fa-arrow-down"></i>
+        </a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-num">₦0</span>
+          <span class="stat-label">Cost to start</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num">5 mins</span>
+          <span class="stat-label">To get set up</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num">100%</span>
+          <span class="stat-label">Your data only</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <div class="dashboard-mockup">
+        <div class="mockup-header">
+          <span class="mockup-title">checkam / dashboard</span>
+          <div class="mockup-dots"><span></span><span></span><span></span></div>
+        </div>
+        <div class="balance-card">
+          <div class="balance-label">Total Balance</div>
+          <div class="balance-amount">₦248,500</div>
+          <div class="balance-meta">
+            <div class="balance-meta-item">
+              <span class="meta-label">Income</span>
+              <span class="meta-val inc">+₦380,000</span>
+            </div>
+            <div class="balance-meta-item">
+              <span class="meta-label">Expenses</span>
+              <span class="meta-val exp">−₦131,500</span>
+            </div>
+            <div class="balance-meta-item">
+              <span class="meta-label">Savings</span>
+              <span class="meta-val">65.4%</span>
+            </div>
+          </div>
+        </div>
+        <div class="mockup-txns">
+          <div class="txn-row">
+            <div class="txn-left">
+              <div class="txn-icon salary"><i class="fas fa-briefcase"></i></div>
+              <div><div class="txn-name">Monthly Salary</div><div class="txn-date">Jun 1, 2026</div></div>
+            </div>
+            <span class="txn-amt pos">+₦350,000</span>
+          </div>
+          <div class="txn-row">
+            <div class="txn-left">
+              <div class="txn-icon rent"><i class="fas fa-home"></i></div>
+              <div><div class="txn-name">Rent Payment</div><div class="txn-date">Jun 2, 2026</div></div>
+            </div>
+            <span class="txn-amt neg">−₦75,000</span>
+          </div>
+          <div class="txn-row">
+            <div class="txn-left">
+              <div class="txn-icon food"><i class="fas fa-utensils"></i></div>
+              <div><div class="txn-name">Groceries</div><div class="txn-date">Jun 3, 2026</div></div>
+            </div>
+            <span class="txn-amt neg">−₦18,500</span>
+          </div>
+          <div class="txn-row">
+            <div class="txn-left">
+              <div class="txn-icon trans"><i class="fas fa-gas-pump"></i></div>
+              <div><div class="txn-name">Fuel</div><div class="txn-date">Jun 4, 2026</div></div>
+            </div>
+            <span class="txn-amt neg">−₦12,000</span>
+          </div>
+        </div>
+        <div class="budget-bar-section">
+          <div class="budget-bar-label"><span>Food Budget</span><span>₦18,500 / ₦30,000</span></div>
+          <div class="budget-bar-track">
+            <div class="budget-bar-fill" id="bar1" style="width:0%; background:#1E8449;"></div>
+          </div>
+          <div class="budget-bar-label"><span>Transport</span><span>₦12,000 / ₦20,000</span></div>
+          <div class="budget-bar-track">
+            <div class="budget-bar-fill" id="bar2" style="width:0%; background:#F39C12;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="features" id="features">
+    <p class="section-eyebrow">Everything you need</p>
+    <h2 class="section-title">Your money, fully visible</h2>
+    <p class="section-sub">Six tools that give you total control over your naira.</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-plus-circle"></i></div>
+        <div class="feature-name">Log Transactions</div>
+        <p class="feature-desc">Add income and expenses in seconds. Categorise by food, rent, transport, and more with a single click.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-wallet"></i></div>
+        <div class="feature-name">Category Budgets</div>
+        <p class="feature-desc">Set a monthly limit per spending category. Live progress bars show exactly how much you have left.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-chart-pie"></i></div>
+        <div class="feature-name">Visual Reports</div>
+        <p class="feature-desc">Monthly income vs expense bar charts and category doughnut charts powered by Chart.js.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-filter"></i></div>
+        <div class="feature-name">Smart Filters</div>
+        <p class="feature-desc">Search, filter by type or category, and sort by date or amount across all your transactions.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-file-csv"></i></div>
+        <div class="feature-name">CSV Export</div>
+        <p class="feature-desc">Download your full transaction history as a spreadsheet any time — your data, your way.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-lock"></i></div>
+        <div class="feature-name">Private & Secure</div>
+        <p class="feature-desc">Every account is isolated. Your transactions are only ever visible to you, no one else.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <div class="cta-box">
+      <h2>Ready to check am?</h2>
+      <p>Create your free account and start tracking your naira today. No credit card, no wahala.</p>
+      <a href="{% url 'auth_page' %}" class="btn-white">
+        <i class="fas fa-user-plus"></i> Create Free Account
+      </a>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2026 Checkam. Powered by <a href="https://dev-bee.vercel.app/">DevBeeLab</a></p>
+  </footer>
+
+  <script src="{% static 'js/landing.js' %}"></script>
+</body>
+</html>
