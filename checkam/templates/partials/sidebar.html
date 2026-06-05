@@ -15,8 +15,14 @@
 
   <ul class="sidebar__nav">
     <li class="nav-item">
-      <a href="{% url 'dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}nav-link--active{% endif %}">
+      <a href="{% url 'landing' %}" class="nav-link">
         <span class="nav-icon"><i class="fas fa-home"></i></span>
+        <span class="nav-text">Homepage</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a href="{% url 'dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}nav-link--active{% endif %}">
+        <span class="nav-icon"><i class="fas fa-tachometer-alt"></i></span>
         <span class="nav-text">Dashboard</span>
       </a>
     </li>
