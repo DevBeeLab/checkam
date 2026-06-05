@@ -16,7 +16,7 @@ from .models import Transactions, Budget
 # ──────────────────────────── AUTH ────────────────────────────
 
 def landing(request):
-    return render(request, 'landing/landing.html')
+    return render(request, 'landing_page.html')
 
 
 def auth_page(request):
