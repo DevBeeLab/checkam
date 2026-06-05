@@ -16,8 +16,6 @@ from .models import Transactions, Budget
 # ──────────────────────────── AUTH ────────────────────────────
 
 def landing(request):
-    if request.user.is_authenticated:
-        return redirect('dashboard')
     return render(request, 'landing/landing.html')
 
 
