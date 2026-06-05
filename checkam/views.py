@@ -16,7 +16,10 @@ from .models import Transactions, Budget
 # ──────────────────────────── AUTH ────────────────────────────
 
 def landing(request):
-    return render(request, 'landing_page.html')
+    if request.user.is_authenticated:
+        return redirect('dashboard')
+    return render(request, 'landing/landing.html')
+
 
 def auth_page(request):
     if request.user.is_authenticated:
@@ -26,17 +29,13 @@ def auth_page(request):
         form_type = request.POST.get('form_type')
 
         if form_type == 'signup':
-            username = request.POST.get('username', '').strip().lower()
             first_name = request.POST.get('first_name', '').strip().capitalize()
             last_name  = request.POST.get('last_name',  '').strip().capitalize()
             email      = request.POST.get('email', '').strip().lower()
             password   = request.POST.get('password', '')
 
-            if not all([username, first_name, last_name, email, password]):
+            if not all([first_name, last_name, email, password]):
                 messages.error(request, 'Please fill all the fields')
-                return render(request, 'auth/auth_page.html')
-            if User.objects.filter(username=username).exists():
-                messages.error(request, 'Username already exists')
                 return render(request, 'auth/auth_page.html')
             if User.objects.filter(email=email).exists():
                 messages.error(request, 'Email already exists')
@@ -56,30 +55,24 @@ def auth_page(request):
             if not re.search(r'[@$!%*?&]', password):
                 messages.error(request, 'Password must contain a special character (@$!%*?&).')
                 return render(request, 'auth/auth_page.html')
-            
-            user = User.objects.create_user(
-                username=username,
-                first_name=first_name,
-                last_name=last_name,
-                email=email
-            )
+
+            user = User.objects.create_user(username=email, first_name=first_name, last_name=last_name, email=email)
             user.set_password(password)
             user.save()
             login(request, user)
-
             messages.success(request, 'Account created successfully!')
             return redirect('dashboard')
 
         elif form_type == 'signin':
-            username = request.POST.get('username', '').strip().lower()
+            email    = request.POST.get('email', '').strip().lower()
             password = request.POST.get('password', '')
-            if not username or not password:
+            if not email or not password:
                 messages.error(request, 'Please fill all the fields')
                 return render(request, 'auth/auth_page.html')
-            if not User.objects.filter(username=username).exists():
+            if not User.objects.filter(email=email).exists():
                 messages.error(request, 'User not found')
                 return render(request, 'auth/auth_page.html')
-            user = authenticate(request, username=username, password=password)
+            user = authenticate(request, username=email, password=password)
             if not user:
                 messages.error(request, 'Incorrect password')
                 return render(request, 'auth/auth_page.html')
@@ -333,9 +326,9 @@ class BudgetPerformanceAPI(LoginRequiredMixin, View):
         data = []
         for b in budgets:
             spent = (Transactions.objects
-                     .filter(user=request.user, transaction_type='expense')
+                     .filter(user=request.user, transaction_type='expense', category=b.category)
                      .aggregate(total=Sum('amount'))['total'] or 0)
-            data.append({'title': b.title, 'limit': float(b.limit), 'spent': float(spent)})
+            data.append({'title': b.get_category_display(), 'limit': float(b.limit), 'spent': float(spent)})
         return JsonResponse({'success': True, 'budgets': data})
 
 
@@ -398,9 +391,9 @@ class ForgotPasswordView(View):
 
 
 # ──────────────────────────── ERROR HANDLERS ────────────────────────────
- 
+
 def handler404(request, exception=None):
     return render(request, '404.html', status=404)
- 
+
 def handler500(request):
     return render(request, '500.html', status=500)

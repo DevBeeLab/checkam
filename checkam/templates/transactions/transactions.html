@@ -9,9 +9,12 @@
 
 {% block content %}
 <div class="transactions-page">
+
   <header class="page-header">
     <h2 class="page-title">Transactions</h2>
-    <button type="button" class="btn btn-primary" id="addTransactionBtn">Add Transaction</button>
+    <button type="button" class="btn btn-primary" id="addTransactionBtn">
+      <i class="fas fa-plus"></i> <span class="btn-label">Add Transaction</span>
+    </button>
   </header>
 
   <section class="filters-section">
@@ -32,55 +35,113 @@
     </select>
   </section>
 
-  <table class="transactions-table">
-    <thead>
-      <tr>
-        <th>Description</th>
-        <th>Type</th>
-        <th>Category</th>
-        <th>Amount</th>
-        <th>Date</th>
-        <th class="text-center">Actions</th>
-      </tr>
-    </thead>
-    <tbody id="transactions-body">
-      {% for t in transactions %}
-      <tr data-id="{{ t.id }}"
-          data-description="{{ t.description }}"
-          data-amount="{{ t.amount }}"
-          data-date="{{ t.date|date:'Y-m-d' }}"
-          data-category="{{ t.category }}"
-          data-type="{{ t.transaction_type }}"
-          data-transaction_type="{{ t.transaction_type }}">
-        <td>{{ t.description }}</td>
-        <td>
-          <span class="badge badge--{{ t.transaction_type }}">{{ t.transaction_type|capfirst }}</span>
-        </td>
-        <td>{{ t.category|capfirst }}</td>
-        <td class="{% if t.transaction_type == 'income' %}text-income{% else %}text-expense{% endif %}">
-          {% if t.transaction_type == 'income' %}+{% else %}−{% endif %}₦{{ t.amount|intcomma }}
-        </td>
-        <td>{{ t.date|date:"M d, Y" }}</td>
-        <td class="text-center">
-          <button class="btn btn-sm btn-secondary edit-transaction"
-            data-id="{{ t.id }}"
+  <!-- Desktop table -->
+  <div class="table-wrapper">
+    <table class="transactions-table">
+      <thead>
+        <tr>
+          <th>Description</th>
+          <th>Type</th>
+          <th>Category</th>
+          <th>Amount</th>
+          <th>Date</th>
+          <th class="text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="transactions-body">
+        {% for t in transactions %}
+        <tr data-id="{{ t.id }}"
             data-description="{{ t.description }}"
             data-amount="{{ t.amount }}"
             data-date="{{ t.date|date:'Y-m-d' }}"
             data-category="{{ t.category }}"
+            data-type="{{ t.transaction_type }}"
             data-transaction_type="{{ t.transaction_type }}">
-            Edit
+          <td data-label="Description">{{ t.description }}</td>
+          <td data-label="Type">
+            <span class="badge badge--{{ t.transaction_type }}">{{ t.transaction_type|capfirst }}</span>
+          </td>
+          <td data-label="Category">{{ t.category|capfirst }}</td>
+          <td data-label="Amount" class="{% if t.transaction_type == 'income' %}text-income{% else %}text-expense{% endif %}">
+            {% if t.transaction_type == 'income' %}+{% else %}−{% endif %}₦{{ t.amount|intcomma }}
+          </td>
+          <td data-label="Date">{{ t.date|date:"M d, Y" }}</td>
+          <td data-label="Actions" class="text-center actions-cell">
+            <button class="btn btn-sm btn-secondary edit-transaction"
+              data-id="{{ t.id }}"
+              data-description="{{ t.description }}"
+              data-amount="{{ t.amount }}"
+              data-category="{{ t.category }}"
+              data-transaction_type="{{ t.transaction_type }}">
+              <i class="fas fa-pen"></i>
+            </button>
+            <a href="{% url 'delete-transaction' t.id %}">
+              <button class="btn btn-sm btn-danger">
+                <i class="fas fa-trash"></i>
+              </button>
+            </a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" class="text-center empty-cell">No transactions found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Mobile cards (same data, different layout — controlled by CSS) -->
+  <div class="txn-cards" id="txn-cards-mobile">
+    {% for t in transactions %}
+    <div class="txn-card"
+        data-id="{{ t.id }}"
+        data-description="{{ t.description }}"
+        data-amount="{{ t.amount }}"
+        data-date="{{ t.date|date:'Y-m-d' }}"
+        data-category="{{ t.category }}"
+        data-type="{{ t.transaction_type }}"
+        data-transaction_type="{{ t.transaction_type }}">
+
+      <div class="txn-card__left">
+        <div class="txn-card__icon txn-icon--{{ t.category }}">
+          {% if t.category == 'food' %}<i class="fas fa-utensils"></i>
+          {% elif t.category == 'transport' %}<i class="fas fa-gas-pump"></i>
+          {% elif t.category == 'rent' %}<i class="fas fa-home"></i>
+          {% elif t.category == 'salary' %}<i class="fas fa-briefcase"></i>
+          {% elif t.category == 'data' %}<i class="fas fa-wifi"></i>
+          {% elif t.category == 'entertainment' %}<i class="fas fa-film"></i>
+          {% elif t.category == 'utilities' %}<i class="fas fa-bolt"></i>
+          {% else %}<i class="fas fa-receipt"></i>{% endif %}
+        </div>
+        <div class="txn-card__info">
+          <span class="txn-card__name">{{ t.description }}</span>
+          <span class="txn-card__meta">{{ t.category|capfirst }} · {{ t.date|date:"M d, Y" }}</span>
+        </div>
+      </div>
+
+      <div class="txn-card__right">
+        <span class="txn-card__amount txn-card__amount--{{ t.transaction_type }}">
+          {% if t.transaction_type == 'income' %}+{% else %}−{% endif %}₦{{ t.amount|intcomma }}
+        </span>
+        <div class="txn-card__actions">
+          <button class="btn btn-sm btn-secondary edit-transaction"
+            data-id="{{ t.id }}"
+            data-description="{{ t.description }}"
+            data-amount="{{ t.amount }}"
+            data-category="{{ t.category }}"
+            data-transaction_type="{{ t.transaction_type }}">
+            <i class="fas fa-pen"></i>
           </button>
           <a href="{% url 'delete-transaction' t.id %}">
-            <button class="btn btn-sm btn-danger">Delete</button>
+            <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
           </a>
-        </td>
-      </tr>
-      {% empty %}
-      <tr><td colspan="6" class="text-center">No transactions found.</td></tr>
-      {% endfor %}
-    </tbody>
-  </table>
+        </div>
+      </div>
+
+    </div>
+    {% empty %}
+    <p class="text-center" style="padding:2rem; color: var(--color-muted);">No transactions found.</p>
+    {% endfor %}
+  </div>
 
   <nav class="pagination" id="paginationContainer"></nav>
 </div>
