@@ -68,15 +68,15 @@ def auth_page(request):
             return redirect('dashboard')
 
         elif form_type == 'signin':
-            email    = request.POST.get('email', '').strip().lower()
+            username = request.POST.get('username', '').strip().lower()
             password = request.POST.get('password', '')
-            if not email or not password:
+            if not username or not password:
                 messages.error(request, 'Please fill all the fields')
                 return render(request, 'auth/auth_page.html')
-            if not User.objects.filter(email=email).exists():
+            if not User.objects.filter(username=username).exists():
                 messages.error(request, 'User not found')
                 return render(request, 'auth/auth_page.html')
-            user = authenticate(request, username=email, password=password)
+            user = authenticate(request, username=username, password=password)
             if not user:
                 messages.error(request, 'Incorrect password')
                 return render(request, 'auth/auth_page.html')
