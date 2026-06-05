@@ -31,7 +31,7 @@ A personal finance tracker built for Nigerian users. Log income and expenses, se
 | Layer | Technology |
 |-------|-----------|
 | Backend | Python 3.13, Django 6 |
-| Database | SQLite (dev) |
+| Database | Neon |
 | Frontend | Vanilla JS, Chart.js |
 | Fonts | Space Mono (numbers), Outfit (body) |
 | Icons | Font Awesome 6 |
@@ -78,7 +78,7 @@ Edit `.env`:
 
 ```env
 SECRET_KEY=your-secret-key-here
-DEBUG=True
+DEBUG= False
 ALLOWED_HOSTS=localhost,127.0.0.1
 ```
 
