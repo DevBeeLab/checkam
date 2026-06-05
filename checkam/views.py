@@ -31,11 +31,15 @@ def auth_page(request):
         if form_type == 'signup':
             first_name = request.POST.get('first_name', '').strip().capitalize()
             last_name  = request.POST.get('last_name',  '').strip().capitalize()
+            username   = request.POST.get('username',   '').strip().lower()
             email      = request.POST.get('email', '').strip().lower()
             password   = request.POST.get('password', '')
 
-            if not all([first_name, last_name, email, password]):
+            if not all([first_name, last_name, username, email, password]):
                 messages.error(request, 'Please fill all the fields')
+                return render(request, 'auth/auth_page.html')
+            if User.objects.filter(username=username).exists():
+                messages.error(request, 'Username already taken')
                 return render(request, 'auth/auth_page.html')
             if User.objects.filter(email=email).exists():
                 messages.error(request, 'Email already exists')
@@ -56,7 +60,10 @@ def auth_page(request):
                 messages.error(request, 'Password must contain a special character (@$!%*?&).')
                 return render(request, 'auth/auth_page.html')
 
-            user = User.objects.create_user(username=email, first_name=first_name, last_name=last_name, email=email)
+            user = User.objects.create_user(
+                username=username, first_name=first_name,
+                last_name=last_name, email=email
+            )
             user.set_password(password)
             user.save()
             login(request, user)
@@ -64,15 +71,15 @@ def auth_page(request):
             return redirect('dashboard')
 
         elif form_type == 'signin':
-            email    = request.POST.get('email', '').strip().lower()
+            username = request.POST.get('username', '').strip().lower()
             password = request.POST.get('password', '')
-            if not email or not password:
+            if not username or not password:
                 messages.error(request, 'Please fill all the fields')
                 return render(request, 'auth/auth_page.html')
-            if not User.objects.filter(email=email).exists():
-                messages.error(request, 'User not found')
+            if not User.objects.filter(username=username).exists():
+                messages.error(request, 'Username not found')
                 return render(request, 'auth/auth_page.html')
-            user = authenticate(request, username=email, password=password)
+            user = authenticate(request, username=username, password=password)
             if not user:
                 messages.error(request, 'Incorrect password')
                 return render(request, 'auth/auth_page.html')
