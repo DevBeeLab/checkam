@@ -54,8 +54,8 @@ def auth_page(request):
             if not re.search(r'\d', password):
                 messages.error(request, 'Password must contain a number.')
                 return render(request, 'auth/auth_page.html')
-            if not re.search(r'[@$!%*?&]', password):
-                messages.error(request, 'Password must contain a special character (@$!%*?&).')
+            if not re.search(r'[@$!%*?&_%^-#]', password):
+                messages.error(request, 'Password must contain a special character (@$!%*?&_%^-#).')
                 return render(request, 'auth/auth_page.html')
 
             user = User.objects.create_user(
