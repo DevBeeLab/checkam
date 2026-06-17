@@ -135,6 +135,14 @@ STATICFILES_DIRS = [
 ]
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+# Makes session cookie expire when browser closes
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-SESSION_COOKIE_AGE = 3600
-SESSION_SAVE_EVERY_REQUEST = True
+
+# Optional: also set a max idle timeout (in seconds)
+# e.g. 3600 = 1 hour of inactivity
+SESSION_COOKIE_AGE = 1800
+
+# Optional but recommended for security
+SESSION_COOKIE_SECURE = True    # Only send cookie over HTTPS
+SESSION_COOKIE_HTTPONLY = True  # JS can't access the cookie
+SESSION_COOKIE_SAMESITE = 'Lax' # Protects against CSRF
