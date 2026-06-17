@@ -138,9 +138,9 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # Makes session cookie expire when browser closes
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-# Optional: also set a max idle timeout (in seconds)
-# e.g. 3600 = 1 hour of inactivity
-SESSION_COOKIE_AGE = 1800
+SESSION_COOKIE_AGE = 1800            # 30min duration
+SESSION_SAVE_EVERY_REQUEST = True    # reset that duration on every request
+                                     # ← together these = inactivity timeout
 
 # Optional but recommended for security
 SESSION_COOKIE_SECURE = True    # Only send cookie over HTTPS
