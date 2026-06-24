@@ -10,9 +10,10 @@ from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 from django.db.models.functions import TruncMonth
-from .models import Transactions
+from .models import Transactions, Budget
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
+
 
 
 # ──────────────────────────── AUTH ────────────────────────────
